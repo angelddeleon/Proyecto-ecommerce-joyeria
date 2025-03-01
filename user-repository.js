@@ -28,6 +28,12 @@ export class UserRepository {
   static login ({ username, password }) {
     Validacion.username(username)
     Validacion.password(password)
+
+    const user = User.findOne({ username })
+    if (!user) throw new Error('Invalid username')
+    const isValid = bcrypt.compare(password, user.password)
+    if (!isValid) throw new Error('Invalid password')
+    return user
   }
 }
 
