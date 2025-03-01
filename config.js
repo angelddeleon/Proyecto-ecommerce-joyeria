@@ -1,3 +1,3 @@
-const { // eslint-disable-next-line no-unused-vars
+export const {
   PORT = 3000
 } = process.env
