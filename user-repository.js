@@ -13,23 +13,36 @@ const User = Schema('User', {
 
 export class UserRepository {
   static async create ({ username, password }) {
-    // Validacion del username
-    if (typeof username !== 'string' || username.length < 6) {
-      throw new Error('Username must be a string with at least 6 characters')
-    }
+    Validacion.username(username)
+    Validacion.password(password)
     // Validacion de que el username no existe
     const user = User.findOne({ username })
     if (user) throw new Error('Username already exists')
 
-    // Validacion del password
-    if (typeof password !== 'string' || password.length < 6) {
-      throw new Error('Password must be a string with at least 6 characters')
-    }
     const id = crypto.randomUUID()
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
     // Creacion del usuario
     User.create({ _id: id, username, password: hashedPassword }).save()
   }
 
-  static login ({ username, password }) {}
+  static login ({ username, password }) {
+    Validacion.username(username)
+    Validacion.password(password)
+  }
+}
+
+class Validacion {
+  // Validacion del username
+  static username (username) {
+    if (typeof username !== 'string' || username.length < 6) {
+      throw new Error('Username must be a string with at least 6 characters')
+    }
+  }
+
+  // Validacion del password
+  static password (password) {
+    if (typeof password !== 'string' || password.length < 6) {
+      throw new Error('Password must be a string with at least 6 characters')
+    }
+  }
 }
